@@ -1,14 +1,3 @@
-// use bevy::prelude::*;
-// use bevy_editor_pls::*;
-
-// fn main() {
-//     App::new()
-//         .add_plugins(DefaultPlugins)
-//         .add_plugin(EditorPlugin)
-//         .add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin)
-//         .add_plugin(bevy::diagnostic::EntityCountDiagnosticsPlugin)
-//         .run();
-// }
 //! A simplified implementation of the classic game "Breakout"
 
 use bevy::{
@@ -17,6 +6,7 @@ use bevy::{
     prelude::*,
     sprite::collide_aabb::{collide, Collision},
 };
+use bevy_editor_pls::*;
 
 // Defines the amount of time that should elapse between each physics step.
 const TIME_STEP: f32 = 1.0 / 60.0;
@@ -67,6 +57,8 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .insert_resource(Scoreboard { score: 0 })
+        .add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin)
+        .add_plugin(bevy::diagnostic::EntityCountDiagnosticsPlugin)
         .insert_resource(ClearColor(BACKGROUND_COLOR))
         .add_startup_system(setup)
         .add_event::<CollisionEvent>()
@@ -429,6 +421,6 @@ fn play_collision_sound(
     // Play a sound once per frame if a collision occurred. `count` consumes the
     // events, preventing them from triggering a sound on the next frame.
     if collision_events.iter().count() > 0 {
-        audio.play(sound.0.clone());
+        audio.play_with_settings(sound.0.clone(), PlaybackSettings::ONCE.with_volume(0.15));
     }
 }
